@@ -25,8 +25,10 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                sh 'docker login -u yogeshx10 -p messi_1019'
-                sh 'docker push yogeshx10/task-manager:latest'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                    sh 'docker push yogeshx10/task-manager:latest'
+                }
             }
         }
 
@@ -37,4 +39,4 @@ pipeline {
             }
         }
     }
-}   
+}
